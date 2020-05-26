@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """ ***************************************************************************
-Modbus client script for debugging
+Modbus TCP client script for debugging
 Author: Michael Oberdorf IT-Consulting
 Datum: 2020-05-20
-
-example taken from: https://pymodbus.readthedocs.io/en/latest/source/example/synchronous_client.html
 *************************************************************************** """
 import sys
 import os
@@ -17,53 +15,13 @@ import struct
 import pandas as pd
 import FloatToHex
 
-VERSION='1.0.1'
+VERSION='1.0.3'
 DEBUG=False
-
 """
 ###############################################################################
 # F U N C T I O N S
 ###############################################################################
 """
-def float_to_hex(value):
-    """ convert a float into a 4 byte hex string """
-    binary_string=bin(struct.unpack('!I', struct.pack('!f', value))[0])[2:].zfill(32)
-    return(format(int(binary_string, 2), 'x').upper())
-
-def hex_to_float(value):
-    """ convert a 4 byte hex string into a float """
-    my_int = int('0x' + value, 16)
-    #binary = bin(my_int)[2:]
-    #return(struct.unpack('!f',struct.pack('!I', int(binary, 2)))[0])
-    return FloatToHex.hextofloat(my_int)
-
-def bin_to_float(binary):
-    return struct.unpack('!f',struct.pack('!I', int(binary, 2)))[0]
-
-def float_to_bin(num):
-    return bin(struct.unpack('!I', struct.pack('!f', num))[0])[2:].zfill(32)
-
-
-def bin_to_float64(b):
-    """ Convert binary string to a float. """
-    bf = int_to_bytes(int(b, 2), 8)  # 8 bytes needed for IEEE 754 binary64.
-    return struct.unpack('>d', bf)[0]
-
-
-def int_to_bytes(n, length):  # Helper function
-    """ Int/long to byte string.
-
-        Python 3.2+ has a built-in int.to_bytes() method that could be used
-        instead, but the following works in earlier versions including 2.x.
-    """
-    return decode('%%0%dx' % (length << 1) % n, 'hex')[-length:]
-
-def float64_to_bin(value):  # For testing.
-    """ Convert float to 64-bit binary string. """
-    [d] = struct.unpack(">Q", struct.pack(">d", value))
-    return '{:064b}'.format(d)
-
-
 def parse_modbus_result(registers, start_register):
     """
     parse_modbus_result - function to parse the modbus result and encode several format types
@@ -71,15 +29,12 @@ def parse_modbus_result(registers, start_register):
     @param start_register: integer, the start register number
     @return: pandas.DataFrame(), table of calculated values per register 
     """
-    bitLength32 = 0
-    bitLength64 = 0
-    previousRegister32 = ''
-    previousRegister64 = ''
+    previousRegister32 = '0000'
     DATA = list()
     for register in registers:
         DATASET = dict()
         DATASET['register'] = start_register
-        htext = format(register, 'x')
+        htext = '{:04x}'.format(register, 'x')
         decParts = [int(htext[i:i+2],16) for i in range(0,len(htext),2)]
         DATASET['INT16'] = register
         DATASET['UINT16'] = register & 0xffff
@@ -91,31 +46,12 @@ def parse_modbus_result(registers, start_register):
         bitString = bin(int(htext, 16))[2:].zfill(16)
         DATASET['BIT'] = bitString
         
-        if bitLength32 >= 1:
-            #DATASET['HEX32'] = '0x' + previousRegister32 + htext
-            DATASET['INT32'] =  int(previousRegister32 + htext, 16)
-            DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
-            bits_32 = bin(DATASET['INT32'])[2:].zfill(32)
-            DATASET['FLOAT32'] = bin_to_float(bits_32)
-            
-            if DATASET['INT32'] == 0.000000e+00: DATASET['INT32'] = 0.0
-            if DATASET['FLOAT32'] == 0.000000e+00: DATASET['FLOAT32'] = 0.0
-            previousRegister32 = htext
-        bitLength32+=1
-        
-        """
-        if bitLength64 == 3:
-            #DATASET['HEX64'] = '0x' + previousRegister64 + htext
-            DATASET['INT64'] = int(previousRegister64 + htext, 16)
-            DATASET['UINT64'] = DATASET['INT64'] & 0xffffffffffffffff
-            bits_64 = bin(DATASET['INT64'])[2:].zfill(64)
-            DATASET['FLOAT64'] = bin_to_float64(bin(DATASET['INT64'])[2:].zfill(32))
-            previousRegister64 = ''
-            bitLength64 = 0
-        else:
-            previousRegister64 += htext
-            bitLength64+=1
-        """
+        DATASET['HEX32'] = '0x' + (previousRegister32 + htext).upper()
+        DATASET['INT32'] =  int(previousRegister32 + htext, 16)
+        DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
+        bits_32 = bin(DATASET['INT32'])[2:].zfill(32)
+        DATASET['FLOAT32'] = FloatToHex.hextofloat(DATASET['INT32'])
+        previousRegister32 = htext
         
         start_register+=1
         DATA.append(DATASET)
@@ -124,10 +60,14 @@ def parse_modbus_result(registers, start_register):
     df = pd.DataFrame.from_dict(DATA, orient='columns')
     df.set_index('register', drop=True, inplace=True)
     
-    if bitLength32 > 1:
-        df = df[['HEX16', 'INT16', 'BIT', 'FLOAT32', 'INT32']]
-    else:
-        df = df[['HEX16', 'INT16', 'BIT']]
+    
+    # some conversions
+    df['INT16'] = df['INT16'].astype('int16')
+    df['UINT16'] = df['UINT16'].astype('uint16')
+    df['FLOAT32'] = df['FLOAT32'].fillna(0.0).astype('float')
+    df['INT32'] = df['INT32'].fillna(df['INT16']).astype('int32')
+    df['UINT32'] = df['UINT32'].fillna(df['UINT16']).astype('uint32')
+
     return(df)
 
 
@@ -147,14 +87,15 @@ if DEBUG: log.setLevel(logging.DEBUG)
 else: log.setLevel(logging.INFO)
 
 # Parsing command line arguments
-parser = argparse.ArgumentParser(description='Modbus TCP Client')
+parser = argparse.ArgumentParser(description='Modbus TCP Client v'+ VERSION)
 group = parser.add_argument_group()
 group.add_argument('-s', '--slave', help='Hostname or IP address of the Modbus TCP slave (default: 127.0.0.1)', default='127.0.0.1')
 group.add_argument('-p', '--port', help='TCP port (default: 502)', default=502)
 group.add_argument('-i', '--slaveid', help='The slave ID, between 1 and 247 (default: 1)', default=1)
 group.add_argument('-t', '--registerType', help='Register type 1 to 4 to read (1=Discrete Output Coils, 2=Discrete Input Contacts, 3=Analog Output Holding Register, 4=Analog Input Register) (default: 3)', default=3)
 group.add_argument('-r', '--register', help='The register address between 0 and 9999 (default: 0)', default=0)
-group.add_argument('-l', '--length', help='How many registers should be read between 1 and 125 (default: 1)', default=1)
+group.add_argument('-l', '--length', help='How many registers should be read, between 1 and 125 (default: 1)', default=1)
+group.add_argument('-c', '--csv', help='Output as CSV', action='store_true', default=False)
 args = parser.parse_args()
 # validate input
 if not isinstance(args.slaveid, int): args.slaveid = int(args.slaveid)
@@ -223,8 +164,15 @@ client.close()
 # parse the results
 df = parse_modbus_result(rr.registers, register_number)
 
+# sort and filter output
+df = df[['HEX16', 'UINT16', 'INT16', 'BIT', 'HEX32', 'FLOAT32']] #, 'UINT32', 'INT32']]
+
 # output results
-with pd.option_context('display.max_rows', None, 'display.max_columns', None): print(df)
+with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.float_format', lambda x: '%.6f' % x):
+    if args.csv:
+        df.to_csv(sys.stdout, sep=';')
+    else:
+        print(df)
 
 
 sys.exit(0)
