@@ -19,7 +19,7 @@ LABEL site.local.os.dist="Alpine"
 LABEL site.local.runtime.name="Python"
 LABEL site.local.runtime.version="3.8"
 LABEL site.local.program.name="Python Modbus TCP Client"
-LABEL site.local.program.version="1.0.3"
+LABEL site.local.program.version="1.0.4"
 
 COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 

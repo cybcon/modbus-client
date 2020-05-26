@@ -22,7 +22,7 @@ df = pd.DataFrame.from_dict([DATA], orient='columns')
 with pd.option_context('display.max_rows', None, 'display.max_columns', None): print(df)
 
 print('Testing: numpy')
-value = i292
+value = 292
 print(np.int16(value))
 print(np.uint16(value))
 

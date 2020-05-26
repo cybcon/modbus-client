@@ -6,16 +6,14 @@ Datum: 2020-05-20
 *************************************************************************** """
 import sys
 import os
-import socket
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 import logging
 import argparse
-from codecs import decode
 import struct
 import pandas as pd
 import FloatToHex
 
-VERSION='1.0.3'
+VERSION='1.0.4'
 DEBUG=False
 """
 ###############################################################################
@@ -35,21 +33,18 @@ def parse_modbus_result(registers, start_register):
         DATASET = dict()
         DATASET['register'] = start_register
         htext = '{:04x}'.format(register, 'x')
-        decParts = [int(htext[i:i+2],16) for i in range(0,len(htext),2)]
         DATASET['INT16'] = register
         DATASET['UINT16'] = register & 0xffff
-        hexParts = ['0x' + htext[i:i+2] for i in range(0,len(htext),2)]
         DATASET['HEX16'] = '0x' + htext.upper()
-        #DATASET['HEX16'] = ' '.join(hexParts)
-        chrParts = [chr(val) for val in decParts]
-        DATASET['ASCII'] = ' '.join(chrParts)
+        #decParts = [int(htext[i:i+2],16) for i in range(0,len(htext),2)]
+        #chrParts = [chr(val) for val in decParts]
+        #DATASET['ASCII'] = ' '.join(chrParts)
         bitString = bin(int(htext, 16))[2:].zfill(16)
         DATASET['BIT'] = bitString
         
         DATASET['HEX32'] = '0x' + (previousRegister32 + htext).upper()
         DATASET['INT32'] =  int(previousRegister32 + htext, 16)
         DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
-        bits_32 = bin(DATASET['INT32'])[2:].zfill(32)
         DATASET['FLOAT32'] = FloatToHex.hextofloat(DATASET['INT32'])
         previousRegister32 = htext
         
@@ -57,9 +52,9 @@ def parse_modbus_result(registers, start_register):
         DATA.append(DATASET)
     
     
+    # Building data frame out of the dictionary
     df = pd.DataFrame.from_dict(DATA, orient='columns')
     df.set_index('register', drop=True, inplace=True)
-    
     
     # some conversions
     df['INT16'] = df['INT16'].astype('int16')
@@ -77,15 +72,6 @@ def parse_modbus_result(registers, start_register):
 ###############################################################################
 """
 
-# Initialize logger
-#FORMAT = ('%(asctime)-15s %(threadName)-15s  %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
-FORMAT = ('%(message)s')
-logging.basicConfig(format=FORMAT)
-log = logging.getLogger()
-
-if DEBUG: log.setLevel(logging.DEBUG)
-else: log.setLevel(logging.INFO)
-
 # Parsing command line arguments
 parser = argparse.ArgumentParser(description='Modbus TCP Client v'+ VERSION)
 group = parser.add_argument_group()
@@ -96,6 +82,7 @@ group.add_argument('-t', '--registerType', help='Register type 1 to 4 to read (1
 group.add_argument('-r', '--register', help='The register address between 0 and 9999 (default: 0)', default=0)
 group.add_argument('-l', '--length', help='How many registers should be read, between 1 and 125 (default: 1)', default=1)
 group.add_argument('-c', '--csv', help='Output as CSV', action='store_true', default=False)
+group.add_argument('-d', '--debug', help='Enable debug output', action='store_true', default=False)
 args = parser.parse_args()
 # validate input
 if not isinstance(args.slaveid, int): args.slaveid = int(args.slaveid)
@@ -117,6 +104,7 @@ if args.length < 1 or args.length > 125:
 if args.length < 1 or args.register + args.length - 1 > 9999:
     log.error('Register length does not exceed the maximum register addresses in a range between 1 and 9999!')
     sys.exit(1)
+if args.debug: DEBUG=True
 
 # define some values, based on the input
 if args.registerType == 1:
@@ -132,6 +120,15 @@ elif args.registerType == 4:
     register_type = 'Analog Input Register'
     register_number = 30000 + args.register
 
+
+# Initialize logger
+#FORMAT = ('%(asctime)-15s %(threadName)-15s  %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
+FORMAT = ('%(message)s')
+logging.basicConfig(format=FORMAT)
+log = logging.getLogger()
+
+if DEBUG: log.setLevel(logging.DEBUG)
+else: log.setLevel(logging.INFO)
 
 # start the master and connect to slave
 if DEBUG:
@@ -149,6 +146,8 @@ if not result:
     sys.exit(2)
 
 
+# TODO: create a loop, requesting max of 100 registers per loop till requested maximum (args.length) has been reached
+
 # read the registers, dependent on the requested type
 if args.registerType == 1:   rr = client.read_coils(args.register, args.length, unit=args.slaveid)
 elif args.registerType == 2: rr = client.read_discrete_inputs(args.register, args.length, unit=args.slaveid)
@@ -164,7 +163,12 @@ client.close()
 # parse the results
 df = parse_modbus_result(rr.registers, register_number)
 
+# TODO: add dataframe to a list of dataframes and concatenate the list to one dataframe
+# TODO: do the 32 bit calculations on the dataframe instead in the parse_modbusresult function
+
+
 # sort and filter output
+# TODO: create a new command line argument "options" to define the order of the values
 df = df[['HEX16', 'UINT16', 'INT16', 'BIT', 'HEX32', 'FLOAT32']] #, 'UINT32', 'INT32']]
 
 # output results
