@@ -25,7 +25,7 @@ docker pull oitc/modbus-client
 Step - 2 : Run the Modbus TCP Client to scan your Modbus Server Registers
 
 ```bash
-docker run --rm oitc/modbus-client:latest -u /app/modbus_client.py [options]
+docker run --rm oitc/modbus-client:latest [options]
 
 usage: modbus_client.py [-h] [-s SLAVE] [-p PORT] [-i SLAVEID]
                         [-t REGISTERTYPE] [-r REGISTER] [-l LENGTH]

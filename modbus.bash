@@ -13,5 +13,5 @@ OPTIONS=${@}
 #  OPTIONS="-s 192.168.58.70 ${OPTIONS}"
 #fi
 
-docker run --rm oitc/modbus-client:latest -u /app/modbus_client.py ${OPTIONS}
+docker run --rm oitc/modbus-client:latest ${OPTIONS}
 

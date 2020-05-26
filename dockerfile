@@ -29,10 +29,8 @@ RUN apk add --no-cache libstdc++ && \
     mkdir -p /app && \
     pip3 install pymodbus
 ADD --chown=root:root app/* /app/
-RUN python /app/test.py && rm -f /app/test.py
 
 USER pythonuser
 
 # Start Server
-ENTRYPOINT ["python"]
-CMD ["-u", "/app/modbus_client.py"]
+ENTRYPOINT ["python", "-u", "/app/modbus_client.py"]
