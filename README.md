@@ -2,6 +2,8 @@
 
 Maintained by: [Michael Oberdorf IT-Consulting](https://www.oberdorf-itc.de/)
 
+Source code: [Bitbucket](https://bitbucket.org/Cybcon/modbus-client/src/master/)
+
 # Supported tags and respective `Dockerfile` links
 
 * [`latest`, `1.0.2`](https://bitbucket.org/Cybcon/modbus-client/src/master/dockerfile)
