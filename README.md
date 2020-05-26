@@ -28,9 +28,9 @@ Step - 2 : Run the Modbus TCP Client to scan your Modbus Server Registers
 docker run --rm oitc/modbus-client:latest [options]
 
 usage: modbus_client.py [-h] [-s SLAVE] [-p PORT] [-i SLAVEID]
-                        [-t REGISTERTYPE] [-r REGISTER] [-l LENGTH]
+                        [-t REGISTERTYPE] [-r REGISTER] [-l LENGTH] [-c] [-d]
 
-Modbus TCP Client
+Modbus TCP Client v1.0.4
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -48,8 +48,10 @@ optional arguments:
   -r REGISTER, --register REGISTER
                         The register address between 0 and 9999 (default: 0)
   -l LENGTH, --length LENGTH
-                        How many registers should be read between 1 and 125
+                        How many registers should be read, between 1 and 125
                         (default: 1)
+  -c, --csv             Output as CSV
+  -d, --debug           Enable debug output
 ```
 
 # License
