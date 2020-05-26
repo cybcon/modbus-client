@@ -6,7 +6,8 @@ Source code: [Bitbucket](https://bitbucket.org/Cybcon/modbus-client/src/master/)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.2`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.2/dockerfile)
+* [`latest`, `1.0.3`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.3/dockerfile)
+* [`1.0.2`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.2/dockerfile)
 
 # What is Modbus TCP Client?
 
