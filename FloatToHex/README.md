@@ -1,7 +1,11 @@
-# FloatToHex Python module
+# Floating Point to Hex Converter
 
-The software was taken/stolen from site:
-  https://gregstoll.com/~gregstoll/floattohex/
+The software was taken from site: https://gregstoll.com/~gregstoll/floattohex/
+
+## Contributor:
+
+Gregory Stoll <greg@gregstoll.com>
+https://gregstoll.com/
 
 # Synopsis
 
