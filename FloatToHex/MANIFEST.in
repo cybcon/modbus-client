@@ -1,0 +1,1 @@
+include *.txt setup.py floattohexmodule.c *.md
