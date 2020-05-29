@@ -12,19 +12,21 @@ import argparse
 import struct
 import pandas as pd
 import FloatToHex
+from numpy import little_endian
 
-VERSION='1.0.4'
+VERSION='1.0.5'
 DEBUG=False
 """
 ###############################################################################
 # F U N C T I O N S
 ###############################################################################
 """
-def parse_modbus_result(registers, start_register):
+def parse_modbus_result(registers, start_register, big_endian=False):
     """
     parse_modbus_result - function to parse the modbus result and encode several format types
     @param registers: list(), the registers result list from modbus client read command
     @param start_register: integer, the start register number
+    @param big_endian: boolean, use big endian when calculating 32 bit values (default: False) 
     @return: pandas.DataFrame(), table of calculated values per register 
     """
     previousRegister32 = '0000'
@@ -42,8 +44,11 @@ def parse_modbus_result(registers, start_register):
         bitString = bin(int(htext, 16))[2:].zfill(16)
         DATASET['BIT'] = bitString
         
-        DATASET['HEX32'] = '0x' + (previousRegister32 + htext).upper()
-        DATASET['INT32'] =  int(previousRegister32 + htext, 16)
+        if big_endian: htext32 = previousRegister32 + htext
+        else: htext32 = htext + previousRegister32
+        
+        DATASET['HEX32'] = '0x' + (htext32).upper()
+        DATASET['INT32'] =  int(htext32, 16)
         DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
         DATASET['FLOAT32'] = FloatToHex.hextofloat(DATASET['INT32'])
         previousRegister32 = htext
@@ -81,6 +86,7 @@ group.add_argument('-i', '--slaveid', help='The slave ID, between 1 and 247 (def
 group.add_argument('-t', '--registerType', help='Register type 1 to 4 to read (1=Discrete Output Coils, 2=Discrete Input Contacts, 3=Analog Output Holding Register, 4=Analog Input Register) (default: 3)', default=3)
 group.add_argument('-r', '--register', help='The register address between 0 and 9999 (default: 0)', default=0)
 group.add_argument('-l', '--length', help='How many registers should be read, between 1 and 125 (default: 1)', default=1)
+group.add_argument('-b', '--bigEndian', help='Use big endian instead of little endian when calculating the 32bit values', action='store_true', default=False)
 group.add_argument('-c', '--csv', help='Output as CSV', action='store_true', default=False)
 group.add_argument('-d', '--debug', help='Enable debug output', action='store_true', default=False)
 args = parser.parse_args()
@@ -161,7 +167,7 @@ if rr.isError():
 client.close()
 
 # parse the results
-df = parse_modbus_result(rr.registers, register_number)
+df = parse_modbus_result(rr.registers, register_number, big_endian=args.bigEndian)
 
 # TODO: add dataframe to a list of dataframes and concatenate the list to one dataframe
 # TODO: do the 32 bit calculations on the dataframe instead in the parse_modbusresult function
