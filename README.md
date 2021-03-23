@@ -6,7 +6,7 @@ Source code: [Bitbucket](https://bitbucket.org/Cybcon/modbus-client/src/master/)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.5`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.5/dockerfile)
+* [`latest`, `1.0.5`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.5/Dockerfile)
 * [`1.0.4`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.4/dockerfile)
 
 
