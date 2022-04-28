@@ -6,7 +6,8 @@ Source code: [Bitbucket](https://bitbucket.org/Cybcon/modbus-client/src/master/)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.5`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.5/Dockerfile)
+* [`latest`, `1.0.6`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.6/Dockerfile)
+* [`1.0.5`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.5/Dockerfile)
 * [`1.0.4`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.4/dockerfile)
 
 
@@ -77,7 +78,7 @@ register
 
 # License
  
-Copyright (c) 2020 Michael Oberdorf IT-Consulting
+Copyright (c) 2020-2022 Michael Oberdorf IT-Consulting
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
