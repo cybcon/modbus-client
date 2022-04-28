@@ -14,7 +14,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.5'
+VERSION='1.0.6'
 DEBUG=False
 """
 ###############################################################################
@@ -77,6 +77,13 @@ def parse_modbus_result(registers, start_register, big_endian=False):
 ###############################################################################
 """
 
+# Initialize logger
+#FORMAT = ('%(asctime)-15s %(threadName)-15s  %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
+FORMAT = ('%(message)s')
+logging.basicConfig(format=FORMAT)
+log = logging.getLogger()
+log.setLevel(logging.INFO)
+
 # Parsing command line arguments
 parser = argparse.ArgumentParser(description='Modbus TCP Client v'+ VERSION)
 group = parser.add_argument_group()
@@ -112,6 +119,9 @@ if args.length < 1 or args.register + args.length - 1 > 9999:
     sys.exit(1)
 if args.debug: DEBUG=True
 
+# change loglevel to DEBUG
+if DEBUG: log.setLevel(logging.DEBUG)
+
 # define some values, based on the input
 if args.registerType == 1:
     register_type = 'Discrete Output Coils'
@@ -125,16 +135,6 @@ elif args.registerType == 3:
 elif args.registerType == 4:
     register_type = 'Analog Input Register'
     register_number = 30000 + args.register
-
-
-# Initialize logger
-#FORMAT = ('%(asctime)-15s %(threadName)-15s  %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
-FORMAT = ('%(message)s')
-logging.basicConfig(format=FORMAT)
-log = logging.getLogger()
-
-if DEBUG: log.setLevel(logging.DEBUG)
-else: log.setLevel(logging.INFO)
 
 # start the master and connect to slave
 if DEBUG:
