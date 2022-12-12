@@ -2,13 +2,13 @@
 
 Maintained by: [Michael Oberdorf IT-Consulting](https://www.oberdorf-itc.de/)
 
-Source code: [Bitbucket](https://bitbucket.org/Cybcon/modbus-client/src/master/)
+Source code: [GitHub](https://github.com/cybcon/modbus-client)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.6`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.6/Dockerfile)
-* [`1.0.5`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.5/Dockerfile)
-* [`1.0.4`](https://bitbucket.org/Cybcon/modbus-client/src/1.0.4/dockerfile)
+* [`latest`, `1.0.6`](https://github.com/cybcon/modbus-server/blob/1.0.6/Dockerfile)
+* [`1.0.5`](https://github.com/cybcon/modbus-server/blob/1.0.5/Dockerfile)
+* [`1.0.4`](https://github.com/cybcon/modbus-server/blob/1.0.4/Dockerfile)
 
 
 # What is Modbus TCP Client?
