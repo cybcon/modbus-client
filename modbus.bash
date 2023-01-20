@@ -14,4 +14,3 @@ OPTIONS=${@}
 #fi
 
 docker run --rm oitc/modbus-client:latest ${OPTIONS}
-

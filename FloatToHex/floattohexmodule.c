@@ -162,4 +162,3 @@ PyObject* PyInit_FloatToHex(void)
 
     return module;
 }
-

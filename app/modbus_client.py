@@ -3,10 +3,12 @@
 Modbus TCP client script for debugging
 Author: Michael Oberdorf IT-Consulting
 Datum: 2020-05-20
+Last modified by: Michael Oberdorf IT-Consulting
+Last modified at: 2023-01-20
 *************************************************************************** """
 import sys
 import os
-from pymodbus.client.sync import ModbusTcpClient as ModbusClient
+from pymodbus.client import ModbusTcpClient as ModbusClient
 import logging
 import argparse
 import struct
@@ -14,7 +16,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.6'
+VERSION='1.0.7'
 DEBUG=False
 """
 ###############################################################################
@@ -26,8 +28,8 @@ def parse_modbus_result(registers, start_register, big_endian=False):
     parse_modbus_result - function to parse the modbus result and encode several format types
     @param registers: list(), the registers result list from modbus client read command
     @param start_register: integer, the start register number
-    @param big_endian: boolean, use big endian when calculating 32 bit values (default: False) 
-    @return: pandas.DataFrame(), table of calculated values per register 
+    @param big_endian: boolean, use big endian when calculating 32 bit values (default: False)
+    @return: pandas.DataFrame(), table of calculated values per register
     """
     previousRegister32 = '0000'
     DATA = list()
@@ -43,24 +45,24 @@ def parse_modbus_result(registers, start_register, big_endian=False):
         #DATASET['ASCII'] = ' '.join(chrParts)
         bitString = bin(int(htext, 16))[2:].zfill(16)
         DATASET['BIT'] = bitString
-        
+
         if big_endian: htext32 = previousRegister32 + htext
         else: htext32 = htext + previousRegister32
-        
+
         DATASET['HEX32'] = '0x' + (htext32).upper()
         DATASET['INT32'] =  int(htext32, 16)
         DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
         DATASET['FLOAT32'] = FloatToHex.hextofloat(DATASET['INT32'])
         previousRegister32 = htext
-        
+
         start_register+=1
         DATA.append(DATASET)
-    
-    
+
+
     # Building data frame out of the dictionary
     df = pd.DataFrame.from_dict(DATA, orient='columns')
     df.set_index('register', drop=True, inplace=True)
-    
+
     # some conversions
     df['INT16'] = df['INT16'].astype('int16')
     df['UINT16'] = df['UINT16'].astype('uint16')
@@ -125,7 +127,7 @@ if DEBUG: log.setLevel(logging.DEBUG)
 # define some values, based on the input
 if args.registerType == 1:
     register_type = 'Discrete Output Coils'
-    register_number = args.register 
+    register_number = args.register
 elif args.registerType == 2:
     register_type = 'Discrete Input Contacts'
     register_number = 10000 + args.register

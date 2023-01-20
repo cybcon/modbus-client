@@ -1,13 +1,19 @@
-FROM python:3.8-alpine AS base
+FROM python:3.10.9-alpine3.17 AS base
+RUN apk upgrade --available --no-cache --update \
+    && /usr/local/bin/python -m pip install --upgrade pip
 
 # Compiling python modules
 FROM base as builder
-
-RUN apk add --no-cache g++ python3-dev && \
-    ln -s /usr/include/locale.h /usr/include/xlocale.h
-ADD FloatToHex /FloatToHex
-RUN cd /FloatToHex; python3 setup.py install
-RUN pip3 install pandas
+RUN apk add --no-cache \
+      g++=12.2.1_git20220924-r4 \
+      python3-dev=3.10.9-r1 \
+    && ln -s /usr/include/locale.h /usr/include/xlocale.h
+COPY FloatToHex /FloatToHex
+WORKDIR /FloatToHex
+RUN python3 setup.py install \
+    && pip3 install --no-cache-dir \
+       pandas==1.5.3 \
+       pymodbus==3.1.0
 
 
 # Building the docker image with already compiled modules
@@ -16,19 +22,20 @@ LABEL maintainer="Michael Oberdorf IT-Consulting <info@oberdorf-itc.de>"
 LABEL site.local.vendor="Michael Oberdorf IT-Consulting"
 LABEL site.local.os.main="Linux"
 LABEL site.local.os.dist="Alpine"
+LABEL site.local.os.version="3.17"
 LABEL site.local.runtime.name="Python"
-LABEL site.local.runtime.version="3.8"
+LABEL site.local.runtime.version="3.10.9"
 LABEL site.local.program.name="Python Modbus TCP Client"
-LABEL site.local.program.version="1.0.6"
+LABEL site.local.program.version="1.0.7"
 
-COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
-RUN apk add --no-cache libstdc++ && \
-    addgroup -g 1000 -S pythonuser && \
-    adduser -u 1000 -S pythonuser -G pythonuser && \
-    mkdir -p /app && \
-    pip3 install pymodbus
-ADD --chown=root:root app/* /app/
+RUN apk add --no-cache \
+      libstdc++=12.2.1_git20220924-r4 \
+    && addgroup -g 1000 -S pythonuser \
+    && adduser -u 1000 -S pythonuser -G pythonuser \
+    && mkdir -p /app
+COPY --chown=root:root app/* /app/
 
 USER pythonuser
 
