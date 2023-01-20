@@ -8,7 +8,7 @@ Last modified at: 2023-01-20
 *************************************************************************** """
 import sys
 import os
-from pymodbus.client import ModbusTcpClient as ModbusClient
+from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 import logging
 import argparse
 import struct
@@ -16,7 +16,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.7'
+VERSION='1.0.8'
 DEBUG=False
 """
 ###############################################################################

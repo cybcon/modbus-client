@@ -6,7 +6,7 @@ Source code: [GitHub](https://github.com/cybcon/modbus-client)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.7`](https://github.com/cybcon/modbus-client/blob/v1.0.7/Dockerfile)
+* [`latest`, `1.0.8`](https://github.com/cybcon/modbus-client/blob/v1.0.8/Dockerfile)
 * [`1.0.6`](https://github.com/cybcon/modbus-client/blob/1.0.6/Dockerfile)
 * [`1.0.5`](https://github.com/cybcon/modbus-client/blob/1.0.5/Dockerfile)
 * [`1.0.4`](https://github.com/cybcon/modbus-client/blob/1.0.4/dockerfile)

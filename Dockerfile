@@ -13,8 +13,7 @@ WORKDIR /FloatToHex
 RUN python3 setup.py install \
     && pip3 install --no-cache-dir \
        pandas==1.5.3 \
-       pymodbus==3.1.0
-
+       'pymodbus>=2,<3'
 
 # Building the docker image with already compiled modules
 FROM base
