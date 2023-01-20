@@ -23,4 +23,3 @@ my_64bit_int = FloatToHex.doubletohex(float)
 
 # recover float from IEEE 754 binary64
 print(FloatToHex.hextodouble(my_64bit_int))
-

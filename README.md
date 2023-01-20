@@ -63,7 +63,7 @@ optional arguments:
 ```bash
 docker run --rm oitc/modbus-client:latest -s 192.168.58.70 -p 1503 -t 4 -r 0 -l 10
            HEX16  UINT16  INT16               BIT       HEX32    FLOAT32
-register                                                                
+register
 30000     0x84D9   34009 -31527  1000010011011001  0x84D90000  -0.000000
 30001     0x41ED   16877  16877  0100000111101101  0x41ED84D9  29.689867
 30002     0x0000       0      0  0000000000000000  0x000041ED   0.000000
@@ -77,8 +77,8 @@ register
 ```
 
 # License
- 
-Copyright (c) 2020-2022 Michael Oberdorf IT-Consulting
+
+Copyright (c) 2020-2023 Michael Oberdorf IT-Consulting
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

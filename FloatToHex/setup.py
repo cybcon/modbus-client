@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 # setup.py sdist      to create a package which can be uploaded to PyPi registry (but need more information)
 # setup.py install    to install the package - needs C compiler (vcvarsall.bat on windows)
 
@@ -28,4 +29,3 @@ setup (name = 'FloatToHex',
           ],
        ext_modules = [FloatToHexModule]
        )
-
