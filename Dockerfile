@@ -10,10 +10,7 @@ RUN apk add --no-cache \
     && ln -s /usr/include/locale.h /usr/include/xlocale.h
 COPY FloatToHex /FloatToHex
 WORKDIR /FloatToHex
-RUN python3 setup.py install \
-    && pip3 install --no-cache-dir \
-       pandas==1.5.3 \
-       'pymodbus>=2,<3'
+RUN python3 setup.py install
 
 # Building the docker image with already compiled modules
 FROM base
@@ -25,12 +22,15 @@ LABEL site.local.os.version="3.17"
 LABEL site.local.runtime.name="Python"
 LABEL site.local.runtime.version="3.10.9"
 LABEL site.local.program.name="Python Modbus TCP Client"
-LABEL site.local.program.version="1.0.7"
+LABEL site.local.program.version="1.0.9"
 
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 RUN apk add --no-cache \
       libstdc++=12.2.1_git20220924-r4 \
+      py3-pandas=1.5.1-r0 \
+    && pip3 install --no-cache-dir \
+       'pymodbus>=2,<3' \
     && addgroup -g 1000 -S pythonuser \
     && adduser -u 1000 -S pythonuser -G pythonuser \
     && mkdir -p /app
