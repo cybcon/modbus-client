@@ -28,6 +28,7 @@ COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/pytho
 
 RUN apk add --no-cache \
       libstdc++=12.2.1_git20220924-r4 \
+      py3-wheel=0.38.4-r0 \
       py3-pandas=1.5.1-r0 \
     && pip3 install --no-cache-dir \
        'pymodbus>=2,<3' \

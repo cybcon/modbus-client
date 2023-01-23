@@ -10,6 +10,9 @@
 """
 import sys
 import os
+if os.path.isdir('/usr/lib/python3.10/site-packages'):
+    sys.path.append('/usr/lib/python3.10/site-packages')
+
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 import logging
 import argparse
