@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
-""" ***************************************************************************
-Modbus TCP client script for debugging
-Author: Michael Oberdorf IT-Consulting
-Datum: 2020-05-20
-Last modified by: Michael Oberdorf IT-Consulting
-Last modified at: 2023-01-20
-*************************************************************************** """
+"""
+###############################################################################
+# Modbus TCP client script for debugging
+# Author: Michael Oberdorf IT-Consulting
+# Datum: 2020-05-20
+# Last modified by: Michael Oberdorf IT-Consulting
+# Last modified at: 2023-01-23
+###############################################################################
+"""
 import sys
 import os
+if os.path.isdir('/usr/lib/python3.10/site-packages'):
+    sys.path.append('/usr/lib/python3.10/site-packages')
+
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 import logging
 import argparse
@@ -16,7 +21,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.8'
+VERSION='1.0.9'
 DEBUG=False
 """
 ###############################################################################
