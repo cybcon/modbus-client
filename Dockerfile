@@ -6,7 +6,7 @@ RUN apk upgrade --available --no-cache --update \
 FROM base as builder
 RUN apk add --no-cache \
       g++=12.2.1_git20220924-r4 \
-      python3-dev=3.10.9-r1 \
+      python3-dev=3.10.11-r0 \
     && ln -s /usr/include/locale.h /usr/include/xlocale.h
 COPY FloatToHex /FloatToHex
 WORKDIR /FloatToHex
