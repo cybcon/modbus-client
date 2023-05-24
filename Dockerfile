@@ -22,7 +22,7 @@ LABEL site.local.os.version="3.17"
 LABEL site.local.runtime.name="Python"
 LABEL site.local.runtime.version="3.10.9"
 LABEL site.local.program.name="Python Modbus TCP Client"
-LABEL site.local.program.version="1.0.9"
+LABEL site.local.program.version="1.0.10"
 
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
