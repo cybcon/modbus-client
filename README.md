@@ -6,7 +6,8 @@ Source code: [GitHub](https://github.com/cybcon/modbus-client)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.9`](https://github.com/cybcon/modbus-client/blob/v1.0.9/Dockerfile)
+* [`latest`, `1.0.11`](https://github.com/cybcon/modbus-client/blob/v1.0.11/Dockerfile)
+* [`1.0.9`](https://github.com/cybcon/modbus-client/blob/v1.0.9/Dockerfile)
 * [`1.0.8`](https://github.com/cybcon/modbus-client/blob/v1.0.8/Dockerfile)
 * [`1.0.6`](https://github.com/cybcon/modbus-client/blob/1.0.6/Dockerfile)
 * [`1.0.5`](https://github.com/cybcon/modbus-client/blob/1.0.5/Dockerfile)
@@ -15,7 +16,7 @@ Source code: [GitHub](https://github.com/cybcon/modbus-client)
 
 # What is Modbus TCP Client?
 
-The Modbus TCP Client is a comand line tool, written in python to read and interpret Modbus registers.
+The Modbus TCP Client is a command line tool, written in python to read and interpret Modbus registers.
 
 # QuickStart with Modbus TCP Client and Docker
 
@@ -34,7 +35,7 @@ usage: modbus_client.py [-h] [-s SLAVE] [-p PORT] [-i SLAVEID]
                         [-t REGISTERTYPE] [-r REGISTER] [-l LENGTH] [-b] [-c]
                         [-d]
 
-Modbus TCP Client v1.0.5
+Modbus TCP Client v1.0.11
 
 optional arguments:
   -h, --help            show this help message and exit
