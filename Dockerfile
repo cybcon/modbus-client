@@ -6,7 +6,7 @@ RUN apk upgrade --available --no-cache --update \
 FROM base as builder
 RUN apk add --no-cache \
       g++=12.2.1_git20220924-r4 \
-      python3-dev=3.10.11-r0 \
+      python3-dev=3.10.12-r0 \
     && ln -s /usr/include/locale.h /usr/include/xlocale.h
 COPY FloatToHex /FloatToHex
 WORKDIR /FloatToHex
@@ -22,7 +22,7 @@ LABEL site.local.os.version="3.17"
 LABEL site.local.runtime.name="Python"
 LABEL site.local.runtime.version="3.10.9"
 LABEL site.local.program.name="Python Modbus TCP Client"
-LABEL site.local.program.version="1.0.11"
+LABEL site.local.program.version="1.0.12"
 
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
