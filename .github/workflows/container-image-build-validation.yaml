@@ -48,4 +48,3 @@ jobs:
       image_artifact_name: container-build
       login_dockerhub: false
       trivy_tag: latest
-
