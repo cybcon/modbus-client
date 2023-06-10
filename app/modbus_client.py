@@ -5,7 +5,7 @@
 # Author: Michael Oberdorf IT-Consulting
 # Datum: 2020-05-20
 # Last modified by: Michael Oberdorf IT-Consulting
-# Last modified at: 2023-01-23
+# Last modified at: 2023-06-10
 ###############################################################################
 """
 import sys
@@ -21,7 +21,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.9'
+VERSION='1.0.12'
 DEBUG=False
 """
 ###############################################################################
