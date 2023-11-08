@@ -4,15 +4,12 @@
 # Modbus TCP client script for debugging
 # Author: Michael Oberdorf IT-Consulting
 # Datum: 2020-05-20
-# Last modified by: Michael Oberdorf IT-Consulting
-# Last modified at: 2023-06-10
+# Last modified by: Michael Oberdorf
+# Last modified at: 2023-11-08
 ###############################################################################
 """
 import sys
 import os
-if os.path.isdir('/usr/lib/python3.10/site-packages'):
-    sys.path.append('/usr/lib/python3.10/site-packages')
-
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 import logging
 import argparse
@@ -21,18 +18,20 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.12'
+VERSION='1.0.13'
 DEBUG=False
 """
 ###############################################################################
 # F U N C T I O N S
 ###############################################################################
 """
-def parse_modbus_result(registers, start_register, big_endian=False):
+def parse_modbus_result(registers: list, startRegister: int, readLength: int, valueType: str, big_endian: bool = False):
     """
     parse_modbus_result - function to parse the modbus result and encode several format types
     @param registers: list(), the registers result list from modbus client read command
-    @param start_register: integer, the start register number
+    @param startRegister: integer, the start register number
+    @param readLength: integer, the count of how many registers should be read
+    @param valueType: str(), how to process the register values 'boolean' or 'word'
     @param big_endian: boolean, use big endian when calculating 32 bit values (default: False)
     @return: pandas.DataFrame(), table of calculated values per register
     """
@@ -40,28 +39,39 @@ def parse_modbus_result(registers, start_register, big_endian=False):
     DATA = list()
     for register in registers:
         DATASET = dict()
-        DATASET['register'] = start_register
-        htext = '{:04x}'.format(register, 'x')
-        DATASET['INT16'] = register
-        DATASET['UINT16'] = register & 0xffff
-        DATASET['HEX16'] = '0x' + htext.upper()
-        #decParts = [int(htext[i:i+2],16) for i in range(0,len(htext),2)]
-        #chrParts = [chr(val) for val in decParts]
-        #DATASET['ASCII'] = ' '.join(chrParts)
-        bitString = bin(int(htext, 16))[2:].zfill(16)
-        DATASET['BIT'] = bitString
+        DATASET['register'] = startRegister
+        if valueType == 'word':
+          htext = '{:04x}'.format(register, 'x')
+          DATASET['INT16'] = register
+          DATASET['UINT16'] = register & 0xffff
+          DATASET['HEX16'] = '0x' + htext.upper()
+          #decParts = [int(htext[i:i+2],16) for i in range(0,len(htext),2)]
+          #chrParts = [chr(val) for val in decParts]
+          #DATASET['ASCII'] = ' '.join(chrParts)
+          bitString = bin(int(htext, 16))[2:].zfill(16)
+          DATASET['BIT'] = bitString
 
-        if big_endian: htext32 = previousRegister32 + htext
-        else: htext32 = htext + previousRegister32
+          if big_endian: htext32 = previousRegister32 + htext
+          else: htext32 = htext + previousRegister32
 
-        DATASET['HEX32'] = '0x' + (htext32).upper()
-        DATASET['INT32'] =  int(htext32, 16)
-        DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
-        DATASET['FLOAT32'] = FloatToHex.hextofloat(DATASET['INT32'])
-        previousRegister32 = htext
+          DATASET['HEX32'] = '0x' + (htext32).upper()
+          DATASET['INT32'] =  int(htext32, 16)
+          DATASET['UINT32'] =  DATASET['INT32'] & 0xffffffff
+          DATASET['FLOAT32'] = FloatToHex.hextofloat(DATASET['INT32'])
+          previousRegister32 = htext
+        else:
+          DATASET['BOOL'] = register
+          if register:
+            DATASET['BIT'] = 1
+          else:
+            DATASET['BIT'] = 0
 
-        start_register+=1
+        startRegister+=1
         DATA.append(DATASET)
+
+        # break the loop if we reached the readLength
+        if len(DATA) >= readLength:
+          break
 
 
     # Building data frame out of the dictionary
@@ -69,11 +79,12 @@ def parse_modbus_result(registers, start_register, big_endian=False):
     df.set_index('register', drop=True, inplace=True)
 
     # some conversions
-    df['INT16'] = df['INT16'].astype('int16')
-    df['UINT16'] = df['UINT16'].astype('uint16')
-    df['FLOAT32'] = df['FLOAT32'].fillna(0.0).astype('float')
-    df['INT32'] = df['INT32'].fillna(df['INT16']).astype('int32')
-    df['UINT32'] = df['UINT32'].fillna(df['UINT16']).astype('uint32')
+    if valueType == 'word':
+      df['INT16'] = df['INT16'].astype('int16')
+      df['UINT16'] = df['UINT16'].astype('uint16')
+      df['FLOAT32'] = df['FLOAT32'].fillna(0.0).astype('float')
+      df['INT32'] = df['INT32'].fillna(df['INT16']).astype('int32')
+      df['UINT32'] = df['UINT32'].fillna(df['UINT16']).astype('uint32')
 
     return(df)
 
@@ -160,29 +171,35 @@ if not result:
 
 
 # TODO: create a loop, requesting max of 100 registers per loop till requested maximum (args.length) has been reached
+#       add dataframe to a list of dataframes and concatenate the list to one dataframe
+#       do the 32 bit calculations on the dataframe instead in the parse_modbusresult function
 
 # read the registers, dependent on the requested type
-if args.registerType == 1:   rr = client.read_coils(args.register, args.length, unit=args.slaveid)
-elif args.registerType == 2: rr = client.read_discrete_inputs(args.register, args.length, unit=args.slaveid)
-elif args.registerType == 3: rr = client.read_holding_registers(args.register, args.length, unit=args.slaveid)
-elif args.registerType == 4: rr = client.read_input_registers(args.register, args.length, unit=args.slaveid)
+if args.registerType == 1:
+  rr = client.read_coils(args.register, args.length, unit=args.slaveid)
+elif args.registerType == 2:
+  rr = client.read_discrete_inputs(args.register, args.length, unit=args.slaveid)
+elif args.registerType == 3:
+  rr = client.read_holding_registers(args.register, args.length, unit=args.slaveid)
+elif args.registerType == 4:
+  rr = client.read_input_registers(args.register, args.length, unit=args.slaveid)
 if rr.isError():
-    log.error('Error while querying Modbus TCP slave!')
-    client.close()
-    sys.exit(3)
+  log.error('Error while querying Modbus TCP slave!')
+  client.close()
+  sys.exit(3)
 # close connection
 client.close()
 
 # parse the results
-df = parse_modbus_result(rr.registers, register_number, big_endian=args.bigEndian)
+if args.registerType >= 3:
+  df = parse_modbus_result(registers=rr.registers, startRegister=register_number, readLength=args.length, type='word', big_endian=args.bigEndian)
+  # sort and filter output
+  df = df[['HEX16', 'UINT16', 'INT16', 'BIT', 'HEX32', 'FLOAT32']] #, 'UINT32', 'INT32']]
+else:
+  df = parse_modbus_result(registers=rr.bits, startRegister=register_number, readLength=args.length, valueType='boolean', big_endian=args.bigEndian)
+  df = df[['BIT', 'BOOL']]
 
-# TODO: add dataframe to a list of dataframes and concatenate the list to one dataframe
-# TODO: do the 32 bit calculations on the dataframe instead in the parse_modbusresult function
 
-
-# sort and filter output
-# TODO: create a new command line argument "options" to define the order of the values
-df = df[['HEX16', 'UINT16', 'INT16', 'BIT', 'HEX32', 'FLOAT32']] #, 'UINT32', 'INT32']]
 
 # output results
 with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.float_format', lambda x: '%.6f' % x):

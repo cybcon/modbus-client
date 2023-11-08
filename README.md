@@ -8,37 +8,36 @@ Container Registry: [DockerHub](https://hub.docker.com/r/oitc/modbus-client)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.12`](https://github.com/cybcon/modbus-client/blob/v1.0.12/Dockerfile)
+* [`latest`, `1.0.13`](https://github.com/cybcon/modbus-client/blob/v1.0.13/Dockerfile)
+* [`1.0.12`](https://github.com/cybcon/modbus-client/blob/v1.0.12/Dockerfile)
 * [`1.0.11`](https://github.com/cybcon/modbus-client/blob/v1.0.11/Dockerfile)
-* [`1.0.9`](https://github.com/cybcon/modbus-client/blob/v1.0.9/Dockerfile)
-* [`1.0.8`](https://github.com/cybcon/modbus-client/blob/v1.0.8/Dockerfile)
-* [`1.0.6`](https://github.com/cybcon/modbus-client/blob/1.0.6/Dockerfile)
-* [`1.0.5`](https://github.com/cybcon/modbus-client/blob/1.0.5/Dockerfile)
-* [`1.0.4`](https://github.com/cybcon/modbus-client/blob/1.0.4/dockerfile)
 
 
 # What is Modbus TCP Client?
 
 The Modbus TCP Client is a command line tool, written in python to read and interpret Modbus registers.
 
+The Modbus specification can be found here: [PDF](https://modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf)
+
+
 # QuickStart with Modbus TCP Client and Docker
 
 Step - 1 : Pull the Modbus TCP Client
 
-```bash
+```
 docker pull oitc/modbus-client
 ```
 
 Step - 2 : Run the Modbus TCP Client to scan your Modbus Server Registers
 
-```bash
+```
 docker run --rm oitc/modbus-client:latest [options]
 
 usage: modbus_client.py [-h] [-s SLAVE] [-p PORT] [-i SLAVEID]
                         [-t REGISTERTYPE] [-r REGISTER] [-l LENGTH] [-b] [-c]
                         [-d]
 
-Modbus TCP Client v1.0.12
+Modbus TCP Client v1.0.13
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -64,9 +63,10 @@ optional arguments:
   -d, --debug           Enable debug output
 ```
 
-# Example
+# Examples
+## Read Analog Input Register
 
-```bash
+```
 docker run --rm oitc/modbus-client:latest -s 192.168.58.70 -p 1503 -t 4 -r 0 -l 10
            HEX16  UINT16  INT16               BIT       HEX32    FLOAT32
 register
@@ -80,6 +80,17 @@ register
 30007     0x006C     108    108  0000000001101100  0x006C0068   0.000000
 30008     0x0074     116    116  0000000001110100  0x0074006C   0.000000
 30009     0x0032      50     50  0000000000110010  0x00320074   0.000000
+```
+
+## Discrete Discrete Input Contacts
+
+```
+docker run --rm test:latest -s 192.168.57.10 -p 5020 -t 2 -r 0 -l 3
+          BIT   BOOL
+register
+10000       1   True
+10001       0  False
+10002       1   True
 ```
 
 # License

@@ -1,43 +1,45 @@
-FROM python:3.10.9-alpine3.17 AS base
+FROM alpine:3.18.4 AS base
 RUN apk upgrade --available --no-cache --update \
-    && /usr/local/bin/python -m pip install --upgrade pip
+    && apk add --no-cache --update \
+       python3=3.11.6-r0 \
+       py3-pip=23.1.2-r0 \
+    # Cleanup APK
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+
+
 
 # Compiling python modules
 FROM base as builder
-RUN apk add --no-cache \
-      g++=12.2.1_git20220924-r4 \
-      python3-dev=3.10.12-r0 \
+RUN apk add --no-cache --update \
+      g++=12.2.1_git20220924-r10 \
+      python3-dev=3.11.6-r0 \
     && ln -s /usr/include/locale.h /usr/include/xlocale.h
-COPY FloatToHex /FloatToHex
+COPY --chown=root:root FloatToHex /FloatToHex
+
 WORKDIR /FloatToHex
+
 RUN python3 setup.py install
+
+
+
 
 # Building the docker image with already compiled modules
 FROM base
 LABEL maintainer="Michael Oberdorf IT-Consulting <info@oberdorf-itc.de>"
-LABEL site.local.vendor="Michael Oberdorf IT-Consulting"
-LABEL site.local.os.main="Linux"
-LABEL site.local.os.dist="Alpine"
-LABEL site.local.os.version="3.17"
-LABEL site.local.runtime.name="Python"
-LABEL site.local.runtime.version="3.10.9"
-LABEL site.local.program.name="Python Modbus TCP Client"
-LABEL site.local.program.version="1.0.12"
+LABEL site.local.program.version="1.0.13"
 
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=builder /usr/lib/python3.11/site-packages /usr/lib/python3.11/site-packages
 
-RUN apk add --no-cache \
-      libstdc++=12.2.1_git20220924-r4 \
-      py3-wheel=0.38.4-r0 \
-      py3-pandas=1.5.1-r0 \
-    && pip3 install --no-cache-dir \
-       'pymodbus>=2,<3' \
-    && addgroup -g 1000 -S pythonuser \
-    && adduser -u 1000 -S pythonuser -G pythonuser \
-    && mkdir -p /app
-COPY --chown=root:root app/* /app/
+RUN apk add --no-cache --update \
+      libstdc++=12.2.1_git20220924-r10 \
+      py3-wheel=0.40.0-r1 \
+      py3-pandas=1.5.3-r1
 
-USER pythonuser
+COPY --chown=root:root /src /
+
+RUN pip3 install --no-cache-dir -r /requirements.txt
+
+USER 3748:3748
 
 # Start Server
 ENTRYPOINT ["python", "-u", "/app/modbus_client.py"]
