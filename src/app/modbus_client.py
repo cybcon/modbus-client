@@ -18,7 +18,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.13'
+VERSION='1.0.14'
 DEBUG=False
 """
 ###############################################################################
@@ -192,7 +192,7 @@ client.close()
 
 # parse the results
 if args.registerType >= 3:
-  df = parse_modbus_result(registers=rr.registers, startRegister=register_number, readLength=args.length, type='word', big_endian=args.bigEndian)
+  df = parse_modbus_result(registers=rr.registers, startRegister=register_number, readLength=args.length, valueType='word', big_endian=args.bigEndian)
   # sort and filter output
   df = df[['HEX16', 'UINT16', 'INT16', 'BIT', 'HEX32', 'FLOAT32']] #, 'UINT32', 'INT32']]
 else:

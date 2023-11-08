@@ -26,7 +26,7 @@ RUN python3 setup.py install
 # Building the docker image with already compiled modules
 FROM base
 LABEL maintainer="Michael Oberdorf IT-Consulting <info@oberdorf-itc.de>"
-LABEL site.local.program.version="1.0.13"
+LABEL site.local.program.version="1.0.14"
 
 COPY --from=builder /usr/lib/python3.11/site-packages /usr/lib/python3.11/site-packages
 
