@@ -25,11 +25,12 @@ DEBUG=False
 # F U N C T I O N S
 ###############################################################################
 """
-def parse_modbus_result(registers: list, start_register: int, valueType: str, big_endian: bool = False):
+def parse_modbus_result(registers: list, startRegister: int, readLength: int, valueType: str, big_endian: bool = False):
     """
     parse_modbus_result - function to parse the modbus result and encode several format types
     @param registers: list(), the registers result list from modbus client read command
-    @param start_register: integer, the start register number
+    @param startRegister: integer, the start register number
+    @param readLength: integer, the count of how many registers should be read
     @param valueType: str(), how to process the register values 'boolean' or 'word'
     @param big_endian: boolean, use big endian when calculating 32 bit values (default: False)
     @return: pandas.DataFrame(), table of calculated values per register
@@ -38,7 +39,7 @@ def parse_modbus_result(registers: list, start_register: int, valueType: str, bi
     DATA = list()
     for register in registers:
         DATASET = dict()
-        DATASET['register'] = start_register
+        DATASET['register'] = startRegister
         if valueType == 'word':
           htext = '{:04x}'.format(register, 'x')
           DATASET['INT16'] = register
@@ -65,8 +66,12 @@ def parse_modbus_result(registers: list, start_register: int, valueType: str, bi
           else:
             DATASET['BIT'] = 0
 
-        start_register+=1
+        startRegister+=1
         DATA.append(DATASET)
+
+        # break the loop if we reached the readLength
+        if len(DATA) >= readLength:
+          break
 
 
     # Building data frame out of the dictionary
@@ -187,11 +192,11 @@ client.close()
 
 # parse the results
 if args.registerType >= 3:
-  df = parse_modbus_result(registers=rr.registers, start_register=register_number, type='word', big_endian=args.bigEndian)
+  df = parse_modbus_result(registers=rr.registers, startRegister=register_number, readLength=args.length, type='word', big_endian=args.bigEndian)
   # sort and filter output
   df = df[['HEX16', 'UINT16', 'INT16', 'BIT', 'HEX32', 'FLOAT32']] #, 'UINT32', 'INT32']]
 else:
-  df = parse_modbus_result(registers=rr.bits, start_register=register_number, valueType='boolean', big_endian=args.bigEndian)
+  df = parse_modbus_result(registers=rr.bits, startRegister=register_number, readLength=args.length, valueType='boolean', big_endian=args.bigEndian)
   df = df[['BIT', 'BOOL']]
 
 
