@@ -94,6 +94,12 @@ register
 10002       1   True
 ```
 
+# Donate
+I would appreciate a small donation to support the further development of my open source projects.
+
+<a href="https://www.paypal.com/donate/?hosted_button_id=BHGJGGUS6RH44" target="_blank"><img src="https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png" alt="Donate with PayPal" width="200px"></a>
+
+
 # License
 
 Copyright (c) 2020-2023 Michael Oberdorf IT-Consulting
