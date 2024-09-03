@@ -71,7 +71,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Pull Modbus Client for functionality test
         run: |
-          docker ghcr.io/cybcon/modbus-client/modbus-client:test
+          docker pull ghcr.io/cybcon/modbus-client/modbus-client:test
           echo "# Modbus functionality test" >> ${GITHUB_STEP_SUMMARY}
       - name: Get modbus server address
         id: modbus-server-address
