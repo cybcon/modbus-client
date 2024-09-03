@@ -57,9 +57,9 @@ jobs:
           file: ./Dockerfile
           tags: ghcr.io/cybcon/modbus-client/modbus-client:test
 
-  function-test-preparation:
+  function-test-execution:
     name: Container functionality test execution
-    needs: container-build
+    needs: function-test-preparation
     runs-on: ubuntu-latest
     services:
       modbusserver:
