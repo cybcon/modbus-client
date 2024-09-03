@@ -18,7 +18,7 @@ import pandas as pd
 import FloatToHex
 from numpy import little_endian
 
-VERSION='1.0.14'
+VERSION='1.0.15'
 DEBUG=False
 """
 ###############################################################################
