@@ -9,7 +9,7 @@ RUN apk upgrade --available --no-cache --update \
 
 
 # Compiling python modules
-FROM base as builder
+FROM base AS builder
 RUN apk add --no-cache --update \
       g++=14.2.0-r4 \
       python3-dev=3.12.8-r1 \
@@ -37,7 +37,7 @@ RUN apk add --no-cache --update \
 
 COPY --chown=root:root /src /
 
-RUN pip3 install --no-cache-dir -r /requirements.txt
+RUN pip3 install --no-cache-dir -r /requirements.txt --break-system-packages
 
 USER 3748:3748
 
