@@ -28,7 +28,7 @@ FROM base
 LABEL maintainer="Michael Oberdorf IT-Consulting <info@oberdorf-itc.de>"
 LABEL site.local.program.version="1.0.16"
 
-COPY --from=builder /usr/lib/python3.11/site-packages /usr/lib/python3.11/site-packages
+COPY --from=builder /usr/lib/python3.12/site-packages /usr/lib/python3.12/site-packages
 
 RUN apk add --no-cache --update \
       libstdc++=14.2.0-r4 \
