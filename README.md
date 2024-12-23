@@ -6,9 +6,26 @@ Source code: [GitHub](https://github.com/cybcon/modbus-client)
 
 Container Registry: [DockerHub](https://hub.docker.com/r/oitc/modbus-client)
 
+<!-- SHIELD GROUP -->
+[![][github-action-test-shield]][github-action-test-link]
+[![][github-action-release-shield]][github-action-release-link]
+[![][github-release-shield]][github-release-link]
+[![][github-releasedate-shield]][github-releasedate-link]
+[![][github-stars-shield]][github-stars-link]
+[![][github-forks-shield]][github-forks-link]
+[![][github-issues-shield]][github-issues-link]
+[![][github-license-shield]][github-license-link]
+
+[![][docker-release-shield]][docker-release-link]
+[![][docker-pulls-shield]][docker-pulls-link]
+[![][docker-stars-shield]][docker-stars-link]
+[![][docker-size-shield]][docker-size-link]
+
+
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.15`](https://github.com/cybcon/modbus-client/blob/v1.0.15/Dockerfile)
+* [`latest`, `1.0.16`](https://github.com/cybcon/modbus-client/blob/v1.0.16/Dockerfile)
+* [`1.0.15`](https://github.com/cybcon/modbus-client/blob/v1.0.15/Dockerfile)
 * [`1.0.14`](https://github.com/cybcon/modbus-client/blob/v1.0.14/Dockerfile)
 * [`1.0.13`](https://github.com/cybcon/modbus-client/blob/v1.0.13/Dockerfile)
 * [`1.0.12`](https://github.com/cybcon/modbus-client/blob/v1.0.12/Dockerfile)
@@ -103,7 +120,7 @@ I would appreciate a small donation to support the further development of my ope
 
 # License
 
-Copyright (c) 2020-2023 Michael Oberdorf IT-Consulting
+Copyright (c) 2020-2024 Michael Oberdorf IT-Consulting
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -122,3 +139,30 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+<!-- LINK GROUP -->
+[docker-pulls-link]: https://hub.docker.com/r/oitc/modbus-client
+[docker-pulls-shield]: https://img.shields.io/docker/pulls/oitc/modbus-client?color=45cc11&labelColor=black&style=flat-square
+[docker-release-link]: https://hub.docker.com/r/oitc/modbus-client
+[docker-release-shield]: https://img.shields.io/docker/v/oitc/modbus-client?color=369eff&label=docker&labelColor=black&logo=docker&logoColor=white&style=flat-square
+[docker-size-link]: https://hub.docker.com/r/oitc/modbus-client
+[docker-size-shield]: https://img.shields.io/docker/image-size/oitc/modbus-client?color=369eff&labelColor=black&style=flat-square
+[docker-stars-link]: https://hub.docker.com/r/oitc/modbus-client
+[docker-stars-shield]: https://img.shields.io/docker/stars/oitc/modbus-client?color=45cc11&labelColor=black&style=flat-square
+[github-action-release-link]: https://github.com/cybcon/modbus-client/actions/workflows/release-from-label.yaml
+[github-action-release-shield]: https://img.shields.io/github/actions/workflow/status/cybcon/modbus-client/release-from-label.yaml?label=release&labelColor=black&logo=githubactions&logoColor=white&style=flat-square
+[github-action-test-link]: https://github.com/cybcon/modbus-client/actions/workflows/container-image-build-validation.yaml
+[github-action-test-shield-original]: https://github.com/cybcon/modbus-client/actions/workflows/container-image-build-validation.yaml/badge.svg
+[github-action-test-shield]: https://img.shields.io/github/actions/workflow/status/cybcon/modbus-client/container-image-build-validation.yaml?label=tests&labelColor=black&logo=githubactions&logoColor=white&style=flat-square
+[github-forks-link]: https://github.com/cybcon/modbus-client/network/members
+[github-forks-shield]: https://img.shields.io/github/forks/cybcon/modbus-client?color=8ae8ff&labelColor=black&style=flat-square
+[github-issues-link]: https://github.com/cybcon/modbus-client/issues
+[github-issues-shield]: https://img.shields.io/github/issues/cybcon/modbus-client?color=ff80eb&labelColor=black&style=flat-square
+[github-license-link]: https://github.com/cybcon/modbus-client/blob/main/LICENSE
+[github-license-shield]: https://img.shields.io/badge/license-MIT-blue?labelColor=black&style=flat-square
+[github-release-link]: https://github.com/cybcon/modbus-client/releases
+[github-release-shield]: https://img.shields.io/github/v/release/cybcon/modbus-client?color=369eff&labelColor=black&logo=github&style=flat-square
+[github-releasedate-link]: https://github.com/cybcon/modbus-client/releases
+[github-releasedate-shield]: https://img.shields.io/github/release-date/cybcon/modbus-client?labelColor=black&style=flat-square
+[github-stars-link]: https://github.com/cybcon/modbus-client
+[github-stars-shield]: https://img.shields.io/github/stars/cybcon/modbus-client?color=ffcb47&labelColor=black&style=flat-square
