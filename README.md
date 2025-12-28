@@ -24,7 +24,8 @@ Container Registry: [DockerHub](https://hub.docker.com/r/oitc/modbus-client)
 
 # Supported tags and respective `Dockerfile` links
 
-* [`latest`, `1.0.16`](https://github.com/cybcon/modbus-client/blob/v1.0.16/Dockerfile)
+* [`latest`, `1.0.17`](https://github.com/cybcon/modbus-client/blob/v1.0.17/Dockerfile)
+* [`1.0.16`](https://github.com/cybcon/modbus-client/blob/v1.0.16/Dockerfile)
 * [`1.0.15`](https://github.com/cybcon/modbus-client/blob/v1.0.15/Dockerfile)
 * [`1.0.14`](https://github.com/cybcon/modbus-client/blob/v1.0.14/Dockerfile)
 * [`1.0.13`](https://github.com/cybcon/modbus-client/blob/v1.0.13/Dockerfile)
