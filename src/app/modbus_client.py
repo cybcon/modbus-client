@@ -5,7 +5,7 @@
 # Author: Michael Oberdorf IT-Consulting
 # Datum: 2020-05-20
 # Last modified by: Michael Oberdorf
-# Last modified at: 2024-12-23
+# Last modified at: 2025-12-28
 ###############################################################################
 """
 import argparse
@@ -17,7 +17,7 @@ from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 
 import FloatToHex
 
-VERSION = "1.0.16"
+VERSION = "1.0.17"
 DEBUG = False
 """
 ###############################################################################
